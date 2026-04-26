@@ -125,11 +125,9 @@ def create_fence(length=10, height=1.5, post_count=6, position=(0, 0, 0)):
         #start of loop
         post_x = x + i * post_spacing
         #calculates post x position
-        post_name = f"post_{i:02d}"
-        #names posts by number
-        post = cmds.polyCube(name=post_name, width=0.2, height=height, depth=0.2)[0]
-        cmds.move(post_x, height / 2.0, z, post_name)
-        posts.append(post_name)
+        post = cmds.polyCube(name="post", width=0.2, height=height, depth=0.2)[0]
+        cmds.move(post_x, height / 2.0, z, post)
+        posts.append(post)
         #puts all posts in the "posts" list
         
     rail = cmds.polyCube(name="rail", width=length, height=0.25, depth=0.1)[0]
@@ -138,6 +136,25 @@ def create_fence(length=10, height=1.5, post_count=6, position=(0, 0, 0)):
     fence = cmds.group(posts + [rail], name="fence")
     #uses list of posts to group with the rail
     return fence
+    
+def create_two_fences(size=10, height=1.5, post_count=6, center=(0, 0, 0)):
+    #creating a function to create two fences
+    x, y, z = center
+    half = size / 2.0
+    #for calculating the x and y coordinate later
+    fences = []
+
+    # Bottom side (along X axis)
+    f1 = create_fence(length=size, height=height, post_count=post_count, position=(x - half, y, z - half))
+    fences.append(f1)
+
+    # Top side (along X axis)
+    f2 = create_fence(length=size, height=height, post_count=post_count, position=(x - half, y, z + half))
+    fences.append(f2)
+
+    # Group all fences together
+    square_fence = cmds.group(fences, name="square_fence")
+    return square_fence
 
 
 def create_lamp_post(pole_height=5, light_radius=0.5, position=(0, 0, 0)):
